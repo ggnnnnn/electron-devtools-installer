@@ -41,7 +41,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-fs": "chaijs/chai-fs",
-    "electron": "33.3.0",
+    "electron": "36.0.0",
     "electron-mocha": "^13.0.1",
     "mocha-testdata": "^1.2.0",
     "prettier": "^3.4.2",
@@ -56,5 +56,6 @@
     "LICENSE",
     "README.md",
     "dist"
-  ]
+  ],
+  "packageManager": "yarn@1.22.22"
 }

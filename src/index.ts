@@ -73,7 +73,9 @@ export async function installExtension(
     throw new Error(`Invalid extensionReference passed in: "${extensionReference}"`);
   }
 
-  const installedExtension = targetSession.getAllExtensions().find((e) => e.id === chromeStoreID);
+  const extensionApi: Electron.Extensions | Electron.Session =
+    (targetSession.extensions as Electron.Extensions | undefined) || targetSession;
+  const installedExtension = extensionApi.getAllExtensions().find((e) => e.id === chromeStoreID);
 
   if (!forceDownload && installedExtension) {
     return installedExtension;
@@ -86,17 +88,17 @@ export async function installExtension(
     const unloadPromise = new Promise<void>((resolve) => {
       const handler = (_: unknown, ext: Extension) => {
         if (ext.id === installedExtension.id) {
-          targetSession.removeListener('extension-unloaded', handler);
+          extensionApi.removeListener('extension-unloaded', handler);
           resolve();
         }
       };
-      targetSession.on('extension-unloaded', handler);
+      extensionApi.on('extension-unloaded', handler);
     });
-    targetSession.removeExtension(installedExtension.id);
+    extensionApi.removeExtension(installedExtension.id);
     await unloadPromise;
   }
 
-  return targetSession.loadExtension(extensionFolder, loadExtensionOptions);
+  return extensionApi.loadExtension(extensionFolder, loadExtensionOptions);
 }
 
 export default installExtension;
